@@ -11,8 +11,8 @@ class UserBoardsViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Board.objects.filter(owner=self.request.user)
 
-    def create(self):
-        pass
+    def perform_create(self, serializer):
+        return serializer.save(owner=self.request.user)
 
 class ListViewSet(viewsets.ModelViewSet):
     queryset = List.objects.all()
