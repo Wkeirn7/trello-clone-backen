@@ -5,9 +5,14 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 class UserBoardsViewSet(viewsets.ModelViewSet):
-    queryset = Board.objects.all()
     serializer_class = UserBoardSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Board.objects.filter(owner=self.request.user)
+
+    def create(self):
+        pass
 
 class ListViewSet(viewsets.ModelViewSet):
     queryset = List.objects.all()
