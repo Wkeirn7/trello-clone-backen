@@ -17,14 +17,19 @@ class UserBoardsViewSet(viewsets.ModelViewSet):
 class ListViewSet(viewsets.ModelViewSet):
     queryset = List.objects.all()
     serializer_class = ListSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        board = Board.objects.get(id=self.request.data['board_id'])
+        print(board)
+        return serializer.save(board=board)
 
 class CardViewSet(viewsets.ModelViewSet):
     queryset = Card.objects.all()
     serializer_class = CardSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]
 
 class PersonViewSet(viewsets.ModelViewSet):
     queryset = Person.objects.all()
     serializer_class = PersonSerializer
-    permission_classes = IsAuthenticated
+    permission_classes = [IsAuthenticated]

@@ -10,7 +10,8 @@ class UserBoardSerializer(serializers.ModelSerializer):
 class ListSerializer(serializers.ModelSerializer):
     class Meta:
         model = List
-        fields = ['id', 'list_name']
+        fields = ['id', 'list_name', 'board']
+        read_only_fields = ['board']
 
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
