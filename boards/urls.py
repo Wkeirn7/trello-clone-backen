@@ -25,4 +25,5 @@ list_router.register(r'cards', CardViewSet, basename='cards')
 urlpatterns = [
     path(r'', include(router.urls)),
     path(r'', include(boards_router.urls)),
+    path(r'', include(list_router.urls)),
 ]

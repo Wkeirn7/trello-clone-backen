@@ -28,7 +28,7 @@ class Card(models.Model):
     intro = models.TextField()
     description = models.TextField()
     created_on = models.DateField(auto_now_add=True)
-    assigned_to = models.ForeignKey(Person, on_delete=models.CASCADE, related_name='cards', blank=True)
+    assigned_to = models.ManyToManyField(Person, related_name='cards', blank=True)
     associated_list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='cards')
 
     def __str__(self):

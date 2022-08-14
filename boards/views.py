@@ -51,9 +51,26 @@ class ListViewSet(viewsets.ModelViewSet):
         return List.objects.filter(board=self.kwargs['boards_list_pk'], id=self.kwargs['pk'])
 
 class CardViewSet(viewsets.ModelViewSet):
-    queryset = Card.objects.all()
     serializer_class = CardSerializer
     permission_classes = [IsAuthenticated]
+
+    def list(self, request, boards_list_pk=None, lists_pk=None):
+        queryset = Card.objects.filter(associated_list=lists_pk)
+        serializer = CardSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, boards_list_pk=None, pk=None, lists_pk=None):
+        queryset = Card.objects.filter(associated_list=lists_pk)
+        card = get_object_or_404(queryset, pk=pk)
+        serializer = CardSerializer(card)
+        return Response(serializer.data)
+
+    def perform_create(self, serializer):
+        associated_list = List.objects.get(id=self.kwargs['lists_pk'])
+        return serializer.save(associated_list=associated_list)
+
+    def get_queryset(self):
+        return Card.objects.filter(associated_list=self.kwargs['lists_pk'], id=self.kwargs['pk'])
 
 class PersonViewSet(viewsets.ModelViewSet):
     queryset = Person.objects.all()

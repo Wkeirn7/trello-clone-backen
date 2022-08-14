@@ -16,8 +16,8 @@ class ListSerializer(serializers.ModelSerializer):
 class CardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Card
-        fields = ['id', 'intro', 'description', 'created_on']
-
+        fields = ['id', 'intro', 'description', 'created_on', 'assigned_to']
+        
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
