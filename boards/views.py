@@ -24,6 +24,9 @@ class UserBoardsViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return serializer.save(owner=self.request.user)
 
+    def get_queryset(self):
+        return Board.objects.filter(id=self.kwargs['pk'])
+
 class ListViewSet(viewsets.ModelViewSet):
     serializer_class = ListSerializer
     permission_classes = [IsAuthenticated]
@@ -45,7 +48,6 @@ class ListViewSet(viewsets.ModelViewSet):
         return serializer.save(board=board)
 
     def get_queryset(self):
-        print(self.kwargs)
         return List.objects.filter(board=self.kwargs['boards_list_pk'], id=self.kwargs['pk'])
 
 class CardViewSet(viewsets.ModelViewSet):
