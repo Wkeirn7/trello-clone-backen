@@ -4,6 +4,7 @@ from .serializers import UserBoardSerializer, ListSerializer, CardSerializer, Pe
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
+import json
 
 # Create your views here.
 class UserBoardsViewSet(viewsets.ModelViewSet):
@@ -72,7 +73,39 @@ class CardViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return Card.objects.filter(associated_list=self.kwargs['lists_pk'], id=self.kwargs['pk'])
 
-class PersonViewSet(viewsets.ModelViewSet):
-    queryset = Person.objects.all()
+class BoardPersonViewSet(viewsets.ViewSet):
     serializer_class = PersonSerializer
     permission_classes = [IsAuthenticated]
+
+    def list(self, *args, **kwargs):
+        board = Board.objects.get(id=kwargs['boards_list_pk'])
+        queryset = board.participants.all()
+        serializer = PersonSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, *args, **kwargs):
+        
+        board = Board.objects.get(id=kwargs['boards_list_pk'])
+
+        request_uni = self.request.body.decode('utf-8')
+        body = json.loads(request_uni)
+        print(body)
+        first_name = body['first_name']
+        last_name = body['last_name']
+        person = Person(first_name=first_name, last_name=last_name)
+        person.save()
+
+        board.participants.add(person)
+
+        serializer = PersonSerializer(board.participants.all(), many=True)
+        return Response(serializer.data)
+
+    def destroy(self, *args, **kwargs):
+        board = Board.objects.get(id=kwargs['boards_list_pk'])
+        person = Person.objects.get(id=kwargs['pk'])
+        person.delete()
+        serializer = PersonSerializer(board.participants.all(), many=True)
+        return Response(serializer.data)
+
+
+        

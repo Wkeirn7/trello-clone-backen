@@ -1,7 +1,7 @@
 from cgitb import lookup
 from django.urls import path, include
 from rest_framework import routers
-from .views import UserBoardsViewSet, ListViewSet, CardViewSet
+from .views import UserBoardsViewSet, ListViewSet, CardViewSet, BoardPersonViewSet
 from rest_framework_nested import routers
 
 router = routers.SimpleRouter()
@@ -18,6 +18,7 @@ router.register(r'boards_list', UserBoardsViewSet, basename='boards_list')
 
 boards_router = routers.NestedSimpleRouter(router, r'boards_list', lookup='boards_list')
 boards_router.register(r'lists', ListViewSet, basename='lists')
+boards_router.register(r'participants', BoardPersonViewSet, basename='participants')
 
 list_router = routers.NestedSimpleRouter(boards_router, r'lists', lookup='lists')
 list_router.register(r'cards', CardViewSet, basename='cards')
